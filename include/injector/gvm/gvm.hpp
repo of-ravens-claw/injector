@@ -24,9 +24,10 @@
  *
  */
 #pragma once
-#include <windows.h>
+
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
 
 namespace injector
 {
@@ -119,10 +120,7 @@ class game_version_manager
         // Raises a error saying that you could not detect the game version
         void RaiseCouldNotDetect()
         {
-            MessageBoxA(0,
-                "Could not detect the game version\nContact the mod creator!",
-                PluginName, MB_ICONERROR
-            );
+            printf("Could not detect the game version\nContact the mod creator!\n");
         }
 
         // Raises a error saying that the exe version is incompatible (and output the exe name)
@@ -133,7 +131,7 @@ class game_version_manager
                 "An incompatible exe version has been detected! (%s)\nContact the mod creator!",
                 GetVersionText(v)
                 );
-            MessageBoxA(0, buf, PluginName, MB_ICONERROR);
+            printf("ERROR: %s\n", buf);
         }
 };
 #else   // INJECTOR_GVM_DUMMY
@@ -203,7 +201,7 @@ class address_manager : public game_version_manager
         {
             void* operator()(void* p) const
             {
-                static uintptr_t  module = (uintptr_t)GetModuleHandle(NULL);
+                static uintptr_t module = 0;
                 return (void*)((uintptr_t)(p)-(0x400000 - module));
             }
         };
